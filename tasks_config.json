@@ -5,7 +5,7 @@
       "name": "离渊",
       "duration": 28,
       "hotkey_enabled": true,
-      "hotkey": "F1",
+      "hotkey": "Ctrl+1",
       "popup_reminder": true,
       "voice_reminder": true,
       "custom_voice": ""

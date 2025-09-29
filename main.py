@@ -6,10 +6,10 @@ from PyQt5.QtWidgets import (
     QTableWidget, QTableWidgetItem, QPushButton, QLabel, QLineEdit,
     QSpinBox, QCheckBox, QComboBox, QMessageBox, QSystemTrayIcon,
     QMenu, QAction, QHeaderView, QFrame, QGroupBox, QGridLayout,
-    QAbstractItemView, QStyledItemDelegate
+    QAbstractItemView, QStyledItemDelegate, QFileDialog
 )
 from PyQt5.QtCore import Qt, QTimer, pyqtSignal, QEvent
-from PyQt5.QtGui import QIcon, QFont, QPalette, QColor, QKeySequence
+from PyQt5.QtGui import QIcon, QFont, QPalette, QColor, QKeySequence, QPixmap
 from timer_manager import TimerManager
 from config_manager import ConfigManager
 
@@ -90,7 +90,7 @@ class TaskEditDialog(QWidget):
 
     def init_ui(self):
         self.setWindowTitle("编辑任务" if self.task_data else "添加任务")
-        self.setFixedSize(550, 520)  # 调整窗口大小
+        self.setFixedSize(800, 700)  # 调整窗口大小
         self.setWindowFlags(Qt.Dialog | Qt.WindowCloseButtonHint)
 
         # ========== 最简化样式 - 确保正常显示 ==========
@@ -118,7 +118,7 @@ class TaskEditDialog(QWidget):
         name_row_layout.setSpacing(15)
         name_row_layout.addWidget(QLabel("任务名称:"))
         self.name_edit = QLineEdit()
-        self.name_edit.setPlaceholderText("请输入任务名称，如：回风斩")
+        self.name_edit.setPlaceholderText("请输入任务名称，如：闪现")
         name_row_layout.addWidget(self.name_edit)
         basic_layout.addLayout(name_row_layout)
 
@@ -175,63 +175,82 @@ class TaskEditDialog(QWidget):
         # ========== 提醒设置组 ==========
         reminder_group = QGroupBox("提醒设置")
         reminder_layout = QVBoxLayout()
-        reminder_layout.setSpacing(0)  # 设为0，手动控制间距
-        reminder_layout.setContentsMargins(30, 35, 30, 30)  # 增加内边距
-
-        # 弹窗提醒行
+        reminder_layout.setSpacing(15)  # 行间距
+        reminder_layout.setContentsMargins(25, 30, 25, 25)  # 内边距
+        
+        # 统一样式
+        label_style = "font-size: 16px;"
+        combo_style = "font-size: 16px;"
+        edit_style = "font-size: 16px;"
+        
+        # ========== 弹窗提醒行 ==========
         popup_row_layout = QHBoxLayout()
-        popup_row_layout.setSpacing(20)  # 增加水平间距
+        popup_row_layout.setSpacing(15)  # 水平间距
         popup_label = QLabel("弹窗提醒:")
-        popup_label.setStyleSheet("font-size: 16px; font-weight: bold; padding: 12px 0;")  # 只增大字体，增加上下padding
+        popup_label.setStyleSheet(label_style)
+        popup_label.setContentsMargins(0, 5, 0, 5)
         popup_row_layout.addWidget(popup_label)
+        
         self.popup_combo = QComboBox()
         self.popup_combo.addItems(["是", "否"])
         self.popup_combo.setCurrentText("是")
-        self.popup_combo.setStyleSheet("font-size: 16px;")  # 只增大字体，不改变高度
+        self.popup_combo.setStyleSheet(combo_style)
+        self.popup_combo.setFixedHeight(25)
         popup_row_layout.addWidget(self.popup_combo)
+        
         reminder_layout.addLayout(popup_row_layout)
-
+        
         # 添加分隔线
         line3 = QFrame()
         line3.setFrameShape(QFrame.HLine)
         line3.setFrameShadow(QFrame.Sunken)
-        line3.setStyleSheet("QFrame { color: #cccccc; margin: 20px 0; }")  # 进一步增加上下间距
+        line3.setStyleSheet("QFrame { color: #cccccc; margin: 10px 0; }")
         reminder_layout.addWidget(line3)
-
-        # 语音提醒行
+        
+        # ========== 语音提醒行 ==========
         voice_row_layout = QHBoxLayout()
-        voice_row_layout.setSpacing(20)  # 增加水平间距
+        voice_row_layout.setSpacing(15)
         voice_label = QLabel("语音提醒:")
-        voice_label.setStyleSheet("font-size: 16px; font-weight: bold; padding: 12px 0;")  # 只增大字体，增加上下padding
+        voice_label.setStyleSheet(label_style)
+        voice_label.setContentsMargins(0, 5, 0, 5)
         voice_row_layout.addWidget(voice_label)
+        
         self.voice_combo = QComboBox()
         self.voice_combo.addItems(["是", "否"])
         self.voice_combo.setCurrentText("是")
-        self.voice_combo.setStyleSheet("font-size: 16px;")  # 只增大字体，不改变高度
+        self.voice_combo.setStyleSheet(combo_style)
+        self.voice_combo.setFixedHeight(25)
         voice_row_layout.addWidget(self.voice_combo)
+        
         reminder_layout.addLayout(voice_row_layout)
-
+        
         # 添加分隔线
         line4 = QFrame()
         line4.setFrameShape(QFrame.HLine)
         line4.setFrameShadow(QFrame.Sunken)
-        line4.setStyleSheet("QFrame { color: #cccccc; margin: 20px 0; }")  # 进一步增加上下间距
+        line4.setStyleSheet("QFrame { color: #cccccc; margin: 10px 0; }")
         reminder_layout.addWidget(line4)
-
-        # 自定义语音行
+        
+        # ========== 自定义语音行 ==========
         custom_voice_row_layout = QHBoxLayout()
-        custom_voice_row_layout.setSpacing(20)  # 增加水平间距
+        custom_voice_row_layout.setSpacing(15)
         custom_voice_label = QLabel("自定义语音:")
-        custom_voice_label.setStyleSheet("font-size: 16px; font-weight: bold; padding: 12px 0;")  # 只增大字体，增加上下padding
+        custom_voice_label.setStyleSheet(label_style)
+        custom_voice_label.setContentsMargins(0, 5, 0, 5)
         custom_voice_row_layout.addWidget(custom_voice_label)
+        
         self.custom_voice_edit = QLineEdit()
-        self.custom_voice_edit.setPlaceholderText("留空使用默认语音，如：回风斩时间到了")
-        self.custom_voice_edit.setStyleSheet("font-size: 16px;")  # 只增大字体，不改变高度
+        self.custom_voice_edit.setPlaceholderText("留空使用默认语音，如：闪现时间到了")
+        self.custom_voice_edit.setStyleSheet(edit_style)
+        self.custom_voice_edit.setFixedHeight(32)
         custom_voice_row_layout.addWidget(self.custom_voice_edit)
+        
         reminder_layout.addLayout(custom_voice_row_layout)
-
+        
+        # 最终装载
         reminder_group.setLayout(reminder_layout)
         layout.addWidget(reminder_group)
+        
 
         # 按钮
         button_layout = QHBoxLayout()
@@ -319,9 +338,31 @@ class MainWindow(QMainWindow):
         self.init_tray()
         self.load_tasks()
 
+    def get_app_icon(self):
+        """获取应用程序图标"""
+        # 使用指定的图标文件
+        icon_path = r"C:\Users\admin\Desktop\文档\我的\doge.ico"
+        
+        if os.path.exists(icon_path):
+            return QIcon(icon_path)
+        
+        # 如果指定图标不存在，使用系统默认图标
+        return self.style().standardIcon(self.style().SP_ComputerIcon)
+
+    def set_window_icon(self):
+        """设置窗口图标"""
+        icon = self.get_app_icon()
+        self.setWindowIcon(icon)
+        
+        # 同时设置应用程序图标（用于任务栏）
+        QApplication.instance().setWindowIcon(icon)
+
     def init_ui(self):
         self.setWindowTitle("技能倒计时管理器 v2.0")
-        self.setGeometry(100, 100, 800, 600)
+        self.setGeometry(100, 100, 1000, 800)
+        
+        # 设置窗口图标
+        self.set_window_icon()
 
         # 设置现代化样式
         self.setStyleSheet("""
@@ -454,8 +495,8 @@ class MainWindow(QMainWindow):
         self.tray_icon.setContextMenu(tray_menu)
         self.tray_icon.setToolTip("技能倒计时管理器")
 
-        # 设置托盘图标（使用默认图标）
-        self.tray_icon.setIcon(self.style().standardIcon(self.style().SP_ComputerIcon))
+        # 设置托盘图标
+        self.tray_icon.setIcon(self.get_app_icon())
         self.tray_icon.show()
 
     def closeEvent(self, event):
@@ -647,9 +688,16 @@ class MainWindow(QMainWindow):
         """编辑热键"""
         current_item = self.task_table.item(row, 2)
         if current_item:
+            # 获取当前单元格的宽度
+            current_width = self.task_table.columnWidth(2)
+            
             # 创建临时的热键编辑器
             hotkey_editor = HotkeyEdit()
             hotkey_editor.setText(current_item.text())
+            
+            # 设置固定宽度，防止单元格变宽
+            hotkey_editor.setFixedWidth(current_width - 4)  # 减去一些边距
+            hotkey_editor.setSizePolicy(hotkey_editor.sizePolicy().horizontalPolicy(), hotkey_editor.sizePolicy().verticalPolicy())
 
             # 设置为表格的编辑器
             self.task_table.setCellWidget(row, 2, hotkey_editor)

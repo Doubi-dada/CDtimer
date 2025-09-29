@@ -143,6 +143,15 @@ class ConfigManager:
         
         return False
     
+    def clear_all_tasks(self):
+        """清空所有任务"""
+        task_count = len(self.tasks)
+        self.tasks = []
+        self.save_config()
+        
+        print(f"已清空所有任务，共删除 {task_count} 个任务")
+        return task_count
+    
     def get_task_by_hotkey(self, hotkey: str) -> Optional[Dict]:
         """根据热键获取任务"""
         for task in self.tasks:
