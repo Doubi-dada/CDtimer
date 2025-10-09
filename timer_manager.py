@@ -38,6 +38,7 @@ class TimerManager(QObject):
         }
         
         # 设置计时器
+        # 使用信号连接方式，确保在主线程中处理
         timer_info['timer'].timeout.connect(lambda: self.timer_finished.emit(task_id))
         timer_info['timer'].setSingleShot(True)
         timer_info['timer'].start(task['duration'] * 1000)  # 转换为毫秒
@@ -152,10 +153,12 @@ class TimerManager(QObject):
         """热键按下处理"""
         if self.is_timer_running(task_id):
             # 如果正在运行，则停止
-            self.stop_timer(task_id)
+            # 使用信号在主线程中停止计时器
+            self.main_window.stop_timer_signal.emit(task_id)
         else:
             # 如果没有运行，则开始
-            self.start_timer(task_id)
+            # 使用信号在主线程中启动计时器
+            self.main_window.start_timer_signal.emit(task_id)
     
     def cleanup(self):
         """清理资源"""

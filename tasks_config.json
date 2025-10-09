@@ -3,9 +3,9 @@
     {
       "id": "528636e1-6c8f-4709-b30b-00fe1e646981",
       "name": "离渊",
-      "duration": 28,
+      "duration": 6,
       "hotkey_enabled": true,
-      "hotkey": "Ctrl+1",
+      "hotkey": "F1",
       "popup_reminder": true,
       "voice_reminder": true,
       "custom_voice": ""
@@ -13,7 +13,7 @@
     {
       "id": "7769b552-60b4-44d2-af0e-b418dad857a3",
       "name": "鹰扬诀",
-      "duration": 70,
+      "duration": 5,
       "hotkey_enabled": true,
       "hotkey": "F2",
       "popup_reminder": true,

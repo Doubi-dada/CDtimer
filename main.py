@@ -330,13 +330,23 @@ class EditableTableWidget(QTableWidget):
 
 
 class MainWindow(QMainWindow):
+    """主窗口"""
+    # 添加信号用于在主线程中启动和停止计时器
+    start_timer_signal = pyqtSignal(str)
+    stop_timer_signal = pyqtSignal(str)
+
     def __init__(self):
         super().__init__()
         self.config_manager = ConfigManager()
         self.timer_manager = TimerManager(self)
+        # 连接信号到槽函数
+        self.start_timer_signal.connect(self.timer_manager.start_timer)
+        self.stop_timer_signal.connect(self.timer_manager.stop_timer)
         self.init_ui()
         self.init_tray()
         self.load_tasks()
+        # 确保热键立即加载
+        self.timer_manager.update_hotkeys()
 
     def get_app_icon(self):
         """获取应用程序图标"""
