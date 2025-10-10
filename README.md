@@ -175,3 +175,28 @@ main.py              # 主程序与界面
 ---
 
 ✨ **享受游戏，掌控时间！** ✨
+
+---
+
+## 📦 打包说明
+
+### 打包步骤
+1. 确保已安装 `PyInstaller`：
+   ```bash
+   pip install pyinstaller
+   ```
+
+2. 运行以下命令打包为单文件可执行程序：
+   ```bash
+   pyinstaller --onefile --windowed --icon=NONE --name=CDTimer main.py
+   ```
+
+3. 打包完成后，生成的可执行文件位于 `dist/` 目录下，例如：
+   ```
+   dist/CDTimer.exe
+   ```
+
+### 注意事项
+- 打包后的程序可直接运行，无需安装 Python 或依赖。
+- 可通过添加 `--icon=<图标路径>` 参数自定义程序图标。
+- 分发时请包含 `tasks_config.json` 文件以保存默认任务配置。

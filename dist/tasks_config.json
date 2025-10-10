@@ -1,0 +1,35 @@
+{
+  "tasks": [
+    {
+      "id": "528636e1-6c8f-4709-b30b-00fe1e646981",
+      "name": "离渊",
+      "duration": 6,
+      "hotkey_enabled": true,
+      "hotkey": "F1",
+      "popup_reminder": true,
+      "voice_reminder": true,
+      "custom_voice": ""
+    },
+    {
+      "id": "7769b552-60b4-44d2-af0e-b418dad857a3",
+      "name": "鹰扬诀",
+      "duration": 5,
+      "hotkey_enabled": true,
+      "hotkey": "F2",
+      "popup_reminder": true,
+      "voice_reminder": true,
+      "custom_voice": ""
+    },
+    {
+      "name": "动愈守中",
+      "duration": 70,
+      "hotkey_enabled": true,
+      "hotkey": "F3",
+      "popup_reminder": true,
+      "voice_reminder": true,
+      "custom_voice": "",
+      "id": "1f762fcc-ee10-49b8-916d-48a34949111c"
+    }
+  ],
+  "version": "2.0"
+}
